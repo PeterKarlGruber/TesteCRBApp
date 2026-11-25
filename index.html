@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#092d4a">
+  <title>Plasma OpU eCRB</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy: #092d4a;
+      --blue: #0067a0;
+      --teal: #008477;
+      --ink: #203447;
+      --muted: #647789;
+      --line: #d7e1e9;
+      --surface: #fff;
+      --background: #f3f6f8;
+      --warning: #fff5da;
+      font: 16px/1.5 "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--background); }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { background: var(--navy); color: white; padding: 1.15rem max(1.25rem, calc((100% - 1180px) / 2)); }
+    .brand { display: flex; align-items: center; gap: .85rem; }
+    .brand-mark { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; border: 2px solid #65c8bc; border-radius: 50%; font-weight: 700; }
+    .brand h1 { margin: 0; font-size: 1.15rem; }
+    .brand p { margin: .15rem 0 0; color: #d7e8f1; font-size: .88rem; }
+    .layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 1.5rem; max-width: 1220px; margin: 1.5rem auto; padding: 0 1.25rem; }
+    nav { align-self: start; padding: .5rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+    nav button { display: block; width: 100%; padding: .72rem .8rem; border: 0; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; }
+    nav button:hover, nav button[aria-current="page"] { background: #e8f2f7; color: var(--blue); font-weight: 650; }
+    main { min-width: 0; }
+    .panel { padding: clamp(1.1rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 3px 12px #1636500a; }
+    .panel + .panel { margin-top: 1rem; }
+    h2 { margin: 0 0 .45rem; color: var(--navy); font-size: 1.55rem; }
+    h3 { margin: 1.5rem 0 .55rem; color: var(--navy); font-size: 1.08rem; }
+    p { margin: .4rem 0 .85rem; }
+    .lead, .muted { color: var(--muted); }
+    .notice { margin: 1rem 0; padding: .85rem 1rem; border-left: 4px solid #dda52a; border-radius: 5px; background: var(--warning); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .field { margin: .9rem 0; }
+    label, legend { display: block; margin-bottom: .35rem; font-weight: 650; }
+    input, select, textarea { width: 100%; min-height: 2.65rem; padding: .55rem .65rem; border: 1px solid #aebdca; border-radius: 6px; color: var(--ink); background: white; }
+    textarea { min-height: 6rem; resize: vertical; }
+    fieldset { margin: 1rem 0; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; }
+    fieldset label { display: flex; align-items: flex-start; gap: .5rem; margin: .75rem 0; font-weight: 400; }
+    fieldset input { width: auto; min-height: auto; margin-top: .35rem; }
+    .hint { display: block; color: var(--muted); font-size: .88rem; font-weight: 400; }
+    .button { display: inline-block; padding: .65rem 1rem; border: 0; border-radius: 6px; background: var(--blue); color: white; font-weight: 650; }
+    .button:hover { background: #004e79; }
+    .button.secondary { border: 1px solid var(--line); background: white; color: var(--ink); }
+    .button.small { padding: .42rem .65rem; font-size: .9rem; }
+    .result { margin-top: 1rem; padding: 1rem; border-radius: 8px; background: #e8f5f2; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: .8rem; margin: 1rem 0; }
+    .card { padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: #fbfdfe; }
+    .card strong { display: block; color: var(--navy); font-size: 1.65rem; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--navy); font-size: .9rem; }
+    td { min-width: 110px; }
+    td:first-child { min-width: 180px; }
+    .tag { display: inline-block; padding: .17rem .55rem; border-radius: 99px; background: #e8f2f7; color: #155878; font-size: .84rem; white-space: nowrap; }
+    .empty { padding: 1rem; border: 1px dashed #b6c4ce; border-radius: 8px; color: var(--muted); text-align: center; }
+    .footer { margin: 1rem 0; color: var(--muted); font-size: .84rem; text-align: center; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; margin-top: 1rem; }
+      nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid, .grid.three { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">CRB</span>
+      <div>
+        <h1>Plasma OpU eCRB</h1>
+        <p>Electronic Change Review Board</p>
+      </div>
+    </div>
+  </header>
+  <div class="layout">
+    <nav aria-label="Main menu">
+      <button type="button" data-page="instructions" aria-current="page">eCRB Instructions</button>
+      <button type="button" data-page="matrix">CRB Decision Matrix</button>
+      <button type="button" data-page="submission">eCRB Submission Form</button>
+      <button type="button" data-page="tracker">eCRB Tracker</button>
+      <button type="button" data-page="approvals">eCRB Approvals</button>
+      <button type="button" data-page="metrics">eCRB Metrics</button>
+    </nav>
+    <main>
+      <section id="instructions" class="page panel">
+        <h2>Welcome to the Plasma OpU eCRB</h2>
+        <p class="lead">A guide to identifying the right review board, submitting a Level 2 change draft, tracking endorsement, and monitoring CRB metrics.</p>
+        <div class="notice"><strong>Standalone demonstration:</strong> submissions and tracker updates are saved only in this browser. Power Automate, SharePoint, Microsoft Teams Approvals, email notifications, and Power BI are not connected in this app.</div>
+        <h3>How to use the six modules</h3>
+        <ol>
+          <li><strong>Decision Matrix:</strong> Check Global Product Launch CRB and Bio OpU PCP relevance first. If neither applies, answer the five Step 2 criteria to choose Plasma OpU CRB or Site CRB.</li>
+          <li><strong>Submission Form:</strong> For a change routed to Plasma OpU CRB, provide the draft details and submit it to this local demo tracker.</li>
+          <li><strong>Tracker:</strong> View submitted drafts and record the CRB decision, actual CRB date, and actions.</li>
+          <li><strong>Approvals:</strong> This module explains where live approval requests would appear; actual Teams and Power Automate approval links require an integration.</li>
+          <li><strong>Metrics:</strong> Review counts and decision outcomes for drafts stored in this browser.</li>
+        </ol>
+        <h3>Endorsement guidance</h3>
+        <p>Endorsers should review the change-control presentation and record one of these outcomes: <em>Endorsed</em>, <em>Endorsed with actions</em>, or <em>Rejected</em>. Use comments to describe actions or explain a rejection. If further discussion is needed, coordinate an ad-hoc Plasma OpU CRB with the Chair.</p>
+        <p>If endorsed with actions, Change Owners and Quality Approvers should include those actions when initiating the change control in TrackWise. If rejected due to missing information, provide the missing information and resubmit.</p>
+        <p class="muted">For a Global Product Launch CRB outcome, contact the Global Product Launch CRB Chair. For Bio OpU PCP relevance or a Site CRB change affecting Bio products, share the change information with the respective Bio OpU PQLs.</p>
+      </section>
+
+      <section id="matrix" class="page panel" hidden>
+        <h2>CRB Decision Matrix</h2>
+        <p class="lead">Use Step 1 before the five criteria in Step 2. A Site CRB outcome is intended for changes managed locally; any broader OpU impact indicates Plasma OpU CRB review.</p>
+        <fieldset>
+          <legend>Step 1 — Global Launch CRB or proceed</legend>
+          <label><input type="radio" name="step1" value="global"> The change should be presented at the Global Product Launch CRB.</label>
+          <label><input type="radio" name="step1" value="bio"> The change is relevant for the Biologics OpU PCP.</label>
+          <label><input type="radio" name="step1" value="proceed"> Neither applies; proceed to Step 2.</label>
+        </fieldset>
+        <div id="step-two" hidden>
+          <h3>Step 2 — Plasma OpU CRB or Site CRB</h3>
+          <p>Choose the option that best describes the change for each criterion.</p>
+          <div id="criteria"></div>
+          <button id="evaluate" class="button" type="button">View recommendation</button>
+          <div id="matrix-result" class="result" role="status" hidden></div>
+        </div>
+        <div id="step-one-result" class="result" role="status" hidden></div>
+      </section>
+
+      <section id="submission" class="page panel" hidden>
+        <h2>eCRB Submission Form</h2>
+        <p class="lead">Complete the required fields for a Plasma OpU CRB change-control draft. A submission will be saved in this browser's tracker.</p>
+        <form id="submission-form">
+          <div class="grid">
+            <div class="field"><label for="title">Change title *</label><input id="title" name="title" required maxlength="200"></div>
+            <div class="field"><label for="owner">Change Owner *</label><input id="owner" name="owner" required maxlength="160"></div>
+            <div class="field"><label for="product">Affected Material / Product *</label><input id="product" name="product" required maxlength="200"></div>
+            <div class="field"><label for="planned-date">Planned Implementation Date *</label><input id="planned-date" name="plannedDate" type="date" required></div>
+            <div class="field"><label for="strategy">Planned Implementation Strategy *</label><textarea id="strategy" name="strategy" required maxlength="3000"></textarea></div>
+            <div class="field"><label for="justification">Justification *</label><textarea id="justification" name="justification" required maxlength="3000"></textarea></div>
+            <div class="field"><label for="benefit">Benefit *</label><textarea id="benefit" name="benefit" required maxlength="3000"></textarea></div>
+            <div class="field"><label for="risk">Risk Assessment *</label><textarea id="risk" name="risk" required maxlength="3000"></textarea></div>
+            <div class="field"><label for="actions">High-Level Action Plan *</label><textarea id="actions" name="actions" required maxlength="3000"></textarea></div>
+            <div class="field"><label for="endorsement-date">Latest possible endorsement date *</label><input id="endorsement-date" name="endorsementDate" type="date" required></div>
+            <div class="field"><label for="additional-endorsement">Required additional endorsement</label><textarea id="additional-endorsement" name="additionalEndorsement" maxlength="2000"></textarea></div>
+            <div class="field"><label for="qc-relation">QC Relation *</label><select id="qc-relation" name="qcRelation" required><option value="">Select one</option><option>Yes</option><option>No</option><option>To be assessed</option></select></div>
+          </div>
+          <div class="field"><label for="current-state">Current State *</label><textarea id="current-state" name="currentState" required maxlength="3000"></textarea></div>
+          <div class="field"><label for="future-state">Future State *</label><textarea id="future-state" name="futureState" required maxlength="3000"></textarea></div>
+          <div class="field"><label for="sites">Impacted Sites * <span class="hint">List each impacted manufacturing site.</span></label><textarea id="sites" name="sites" required maxlength="2000"></textarea></div>
+          <button class="button" type="submit">Submit change draft</button>
+          <span id="submission-message" class="muted" role="status" aria-live="polite"></span>
+        </form>
+      </section>
+
+      <section id="tracker" class="page panel" hidden>
+        <h2>eCRB Tracker</h2>
+        <p class="lead">Submitted drafts and locally recorded CRB outcomes.</p>
+        <div id="tracker-content"></div>
+      </section>
+
+      <section id="approvals" class="page panel" hidden>
+        <h2>eCRB Approvals</h2>
+        <p class="lead">Approval requests for submitted change-control drafts.</p>
+        <div class="notice">Live Microsoft Teams Approvals and Power Automate requests are not connected. In the production workflow, endorsers review the attached CRB presentation in Teams or Power Automate; the Chair records the final decision in the Tracker after approvals are complete.</div>
+        <div id="approvals-content"></div>
+      </section>
+
+      <section id="metrics" class="page panel" hidden>
+        <h2>eCRB Metrics</h2>
+        <p class="lead">Summary of change drafts stored locally in this browser. These are not live Power BI metrics.</p>
+        <div id="metrics-content"></div>
+      </section>
+    </main>
+  </div>
+  <p class="footer">Plasma OpU eCRB · Local demonstration</p>
+
+  <script>
+    (() => {
+      "use strict";
+      const STORAGE_KEY = "plasma-opu-ecrb-submissions";
+      const criteria = [
+        ["Extent of the change", "Single site impact", "Change has relevance and impact limited to a single manufacturing site.", "Multi site impact", "Change affects multiple manufacturing sites and requires coordination within OpU."],
+        ["Operational impact", "Minimal / moderate operational impact", "Can be managed locally and does not disrupt critical operations.", "Significant operational impact", "May disrupt critical operations."],
+        ["Regulatory compliance", "Compliance managed at site level", "GMP compliance within the local regulatory framework can be managed at site level.", "Compliance managed at OpU level", "Compliance implications require coordination at OpU level."],
+        ["Resources or expertise", "Site resources available", "The site can manage the change independently.", "External resources required", "Resources or expertise from multiple sites or OpU functions are needed."],
+        ["Regulatory implications", "Minimal / moderate regulatory impact", "Can be managed with regional (US / EU / RoW) coordination.", "Significant regulatory impact", "Requires OpU-wide coordination."]
+      ];
+      const navButtons = document.querySelectorAll("nav button");
+      const pages = document.querySelectorAll(".page");
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[character]);
+      }
+
+      function loadSubmissions() {
+        try {
+          const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(value) ? value.filter(item => item && typeof item === "object" && typeof item.id === "string") : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveSubmissions(submissions) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(submissions));
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      function showPage(page) {
+        pages.forEach(section => { section.hidden = section.id !== page; });
+        navButtons.forEach(button => {
+          if (button.dataset.page === page) button.setAttribute("aria-current", "page");
+          else button.removeAttribute("aria-current");
+        });
+        if (page === "tracker") renderTracker();
+        if (page === "approvals") renderApprovals();
+        if (page === "metrics") renderMetrics();
+      }
+
+      navButtons.forEach(button => button.addEventListener("click", () => showPage(button.dataset.page)));
+
+      document.querySelector("#criteria").innerHTML = criteria.map((item, index) => `
+        <fieldset>
+          <legend>${index + 1}. ${escapeHtml(item[0])}</legend>
+          <label><input type="radio" name="criterion-${index}" value="site"> <span><strong>${escapeHtml(item[1])}</strong><span class="hint">${escapeHtml(item[2])}</span></span></label>
+          <label><input type="radio" name="criterion-${index}" value="opu"> <span><strong>${escapeHtml(item[3])}</strong><span class="hint">${escapeHtml(item[4])}</span></span></label>
+        </fieldset>`).join("");
+
+      document.querySelectorAll('input[name="step1"]').forEach(input => input.addEventListener("change", () => {
+        const stepTwo = document.querySelector("#step-two");
+        const result = document.querySelector("#step-one-result");
+        stepTwo.hidden = input.value !== "proceed";
+        result.hidden = input.value === "proceed";
+        result.textContent = input.value === "global"
+          ? "Recommendation: present this change at the Global Product Launch CRB. Contact the Global CRB Chair."
+          : input.value === "bio"
+            ? "Recommendation: share the change information with the respective Bio OpU PQLs."
+            : "";
+        document.querySelector("#matrix-result").hidden = true;
+      }));
+
+      document.querySelector("#evaluate").addEventListener("click", () => {
+        const result = document.querySelector("#matrix-result");
+        const answers = criteria.map((_, index) => document.querySelector(`input[name="criterion-${index}"]:checked`));
+        if (answers.some(answer => !answer)) {
+          result.textContent = "Please answer all five criteria to see a recommendation.";
+          result.hidden = false;
+          return;
+        }
+        const opuRequired = answers.some(answer => answer.value === "opu");
+        result.textContent = opuRequired
+          ? "Recommendation: submit the change to the Plasma OpU CRB for broader governance."
+          : "Recommendation: submit the change to the Manufacturing Site CRB for local review. For Bio products, share the change information with the respective Bio OpU PQLs.";
+        result.hidden = false;
+      });
+
+      document.querySelector("#submission-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        if (!form.reportValidity()) return;
+        const fields = Object.fromEntries(new FormData(form).entries());
+        const submissions = loadSubmissions();
+        submissions.unshift({
+          ...fields,
+          id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          submittedAt: new Date().toISOString(),
+          decision: "Pending",
+          actualDate: "",
+          crbActions: ""
+        });
+        const message = document.querySelector("#submission-message");
+        if (!saveSubmissions(submissions)) {
+          message.textContent = "Unable to save in this browser. Check storage availability and try again.";
+          return;
+        }
+        form.reset();
+        message.textContent = "Draft submitted to this browser's local tracker. No email or external workflow was triggered.";
+        window.setTimeout(() => { message.textContent = ""; }, 6000);
+      });
+
+      function renderTracker() {
+        const submissions = loadSubmissions();
+        const target = document.querySelector("#tracker-content");
+        if (!submissions.length) {
+          target.innerHTML = '<div class="empty">No change drafts have been submitted in this browser.</div>';
+          return;
+        }
+        target.innerHTML = `<div class="table-wrap"><table>
+          <thead><tr><th>Change draft</th><th>Owner / submitted</th><th>Planned date</th><th>CRB decision</th><th>Actual CRB date</th><th>CRB actions</th><th>Save</th></tr></thead>
+          <tbody>${submissions.map(item => `<tr data-id="${escapeHtml(item.id)}">
+            <td><strong>${escapeHtml(item.title)}</strong><br><span class="tag">${escapeHtml(item.product)}</span></td>
+            <td>${escapeHtml(item.owner)}<br><span class="muted">${escapeHtml(item.submittedAt?.slice(0, 10))}</span></td>
+            <td>${escapeHtml(item.plannedDate)}</td>
+            <td><select class="decision" aria-label="CRB decision for ${escapeHtml(item.title)}">
+              ${["Pending", "Endorsed", "Endorsed with actions", "Rejected"].map(status => `<option${item.decision === status ? " selected" : ""}>${status}</option>`).join("")}
+            </select></td>
+            <td><input class="actual-date" type="date" aria-label="Actual CRB date for ${escapeHtml(item.title)}" value="${escapeHtml(item.actualDate)}"></td>
+            <td><textarea class="crb-actions" aria-label="CRB actions for ${escapeHtml(item.title)}" maxlength="3000">${escapeHtml(item.crbActions)}</textarea></td>
+            <td><button class="button small save-decision" type="button">Save</button><span class="save-status muted" role="status"></span></td>
+          </tr>`).join("")}</tbody></table></div>`;
+        target.querySelectorAll(".save-decision").forEach(button => button.addEventListener("click", () => {
+          const row = button.closest("tr");
+          const records = loadSubmissions();
+          const record = records.find(item => item.id === row.dataset.id);
+          if (!record) return;
+          record.decision = row.querySelector(".decision").value;
+          record.actualDate = row.querySelector(".actual-date").value;
+          record.crbActions = row.querySelector(".crb-actions").value;
+          row.querySelector(".save-status").textContent = saveSubmissions(records) ? " Saved" : " Save failed";
+        }));
+      }
+
+      function renderApprovals() {
+        const submissions = loadSubmissions();
+        const target = document.querySelector("#approvals-content");
+        if (!submissions.length) {
+          target.innerHTML = '<div class="empty">No submitted drafts to display.</div>';
+          return;
+        }
+        target.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Change draft</th><th>Owner</th><th>Local tracker status</th></tr></thead><tbody>
+          ${submissions.map(item => `<tr><td>${escapeHtml(item.title)}</td><td>${escapeHtml(item.owner)}</td><td><span class="tag">${escapeHtml(item.decision)}</span></td></tr>`).join("")}
+          </tbody></table></div>`;
+      }
+
+      function renderMetrics() {
+        const records = loadSubmissions();
+        const count = status => records.filter(item => item.decision === status).length;
+        document.querySelector("#metrics-content").innerHTML = `<div class="cards">
+          <div class="card"><strong>${records.length}</strong>Total drafts</div>
+          <div class="card"><strong>${count("Pending")}</strong>Pending decision</div>
+          <div class="card"><strong>${count("Endorsed")}</strong>Endorsed</div>
+          <div class="card"><strong>${count("Endorsed with actions")}</strong>Endorsed with actions</div>
+          <div class="card"><strong>${count("Rejected")}</strong>Rejected</div>
+        </div><p class="muted">Metrics update from locally saved tracker decisions and are not a substitute for the integrated Power BI dashboard.</p>`;
+      }
+    })();
+  </script>
+</body>
+</html>
