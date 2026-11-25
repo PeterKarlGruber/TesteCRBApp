@@ -104,7 +104,7 @@
         <div class="notice"><strong>Standalone demonstration:</strong> submissions and tracker updates are saved only in this browser. Power Automate, SharePoint, Microsoft Teams Approvals, email notifications, and Power BI are not connected in this app.</div>
         <h3>How to use the six modules</h3>
         <ol>
-          <li><strong>Decision Matrix:</strong> Check Global Product Launch CRB and Bio OpU PCP relevance first. If neither applies, answer the five Step 2 criteria to choose Plasma OpU CRB or Site CRB.</li>
+          <li><strong>Decision Matrix:</strong> Identify launch-related changes for the Global Product Launch CRB and product affiliation. Share information about Biologics or combined Biologics/Plasma products with the Bio OpU PQLs, then continue non-launch changes to the five Step 2 criteria.</li>
           <li><strong>Submission Form:</strong> For a change routed to Plasma OpU CRB, provide the draft details and submit it to this local demo tracker.</li>
           <li><strong>Tracker:</strong> View submitted drafts and record the CRB decision, actual CRB date, and actions.</li>
           <li><strong>Approvals:</strong> This module explains where live approval requests would appear; actual Teams and Power Automate approval links require an integration.</li>
@@ -118,13 +118,21 @@
 
       <section id="matrix" class="page panel" hidden>
         <h2>CRB Decision Matrix</h2>
-        <p class="lead">Use Step 1 before the five criteria in Step 2. A Site CRB outcome is intended for changes managed locally; any broader OpU impact indicates Plasma OpU CRB review.</p>
-        <fieldset>
-          <legend>Step 1 — Global Launch CRB or proceed</legend>
-          <label><input type="radio" name="step1" value="global"> The change should be presented at the Global Product Launch CRB.</label>
-          <label><input type="radio" name="step1" value="bio"> The change is relevant for the Biologics OpU PCP.</label>
-          <label><input type="radio" name="step1" value="proceed"> Neither applies; proceed to Step 2.</label>
-        </fieldset>
+        <p class="lead">Identify launch-related changes and the product affiliation in Step 1. Non-launch changes continue to the five Step 2 criteria; a Site CRB outcome is intended for changes managed locally, while broader OpU impact indicates Plasma OpU CRB review.</p>
+        <h3>Step 1 — Launch and product affiliation</h3>
+        <div class="grid">
+          <fieldset>
+            <legend>Is this change related to a launch?</legend>
+            <label><input type="radio" name="launch-related" value="yes"> Yes</label>
+            <label><input type="radio" name="launch-related" value="no"> No</label>
+          </fieldset>
+          <fieldset>
+            <legend>Is the product related to Biologics or Plasma, or both?</legend>
+            <label><input type="radio" name="product-affiliation" value="biologics"> Biologics</label>
+            <label><input type="radio" name="product-affiliation" value="plasma"> Plasma</label>
+            <label><input type="radio" name="product-affiliation" value="both"> Both</label>
+          </fieldset>
+        </div>
         <div id="step-two" hidden>
           <h3>Step 2 — Plasma OpU CRB or Site CRB</h3>
           <p>Choose the option that best describes the change for each criterion.</p>
@@ -241,18 +249,36 @@
           <label><input type="radio" name="criterion-${index}" value="opu"> <span><strong>${escapeHtml(item[3])}</strong><span class="hint">${escapeHtml(item[4])}</span></span></label>
         </fieldset>`).join("");
 
-      document.querySelectorAll('input[name="step1"]').forEach(input => input.addEventListener("change", () => {
+      function updateStepOne() {
         const stepTwo = document.querySelector("#step-two");
         const result = document.querySelector("#step-one-result");
-        stepTwo.hidden = input.value !== "proceed";
-        result.hidden = input.value === "proceed";
-        result.textContent = input.value === "global"
-          ? "Recommendation: present this change at the Global Product Launch CRB. Contact Jeanette Fait (jeanette.fait@takeda.com), the Global CRB Chair."
-          : input.value === "bio"
-            ? "Recommendation: share the change information with the respective Bio OpU PQLs."
-            : "";
+        const launchRelated = document.querySelector('input[name="launch-related"]:checked')?.value;
+        const productAffiliation = document.querySelector('input[name="product-affiliation"]:checked')?.value;
+        const bioRelevant = productAffiliation === "biologics" || productAffiliation === "both";
+        const messages = [];
+
+        stepTwo.hidden = launchRelated !== "no" || !productAffiliation;
+        if (launchRelated === "yes") {
+          messages.push("Recommendation: present this change at the Global Product Launch CRB. Contact Jeanette Fait, the Global Product Launch CRB Chair. This route stops before Step 2.");
+        }
+        if (bioRelevant) {
+          messages.push("Share the change information with the respective Bio OpU PQLs.");
+        }
+        if (launchRelated === "no") {
+          messages.push(productAffiliation
+            ? "Continue to Step 2 to assess Plasma OpU CRB or Site CRB review."
+            : "Select the product affiliation to continue to Step 2.");
+        } else if (launchRelated === "yes" && !productAffiliation) {
+          messages.push("Select the product affiliation to check whether the Bio OpU PQLs should also be informed.");
+        }
+
+        result.textContent = messages.join(" ");
+        result.hidden = messages.length === 0;
         document.querySelector("#matrix-result").hidden = true;
-      }));
+      }
+
+      document.querySelectorAll('input[name="launch-related"], input[name="product-affiliation"]')
+        .forEach(input => input.addEventListener("change", updateStepOne));
 
       document.querySelector("#evaluate").addEventListener("click", () => {
         const result = document.querySelector("#matrix-result");
