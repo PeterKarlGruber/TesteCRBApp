@@ -137,10 +137,9 @@
           <h3>Step 2 — Plasma OpU CRB or Site CRB</h3>
           <p>Choose the option that best describes the change for each criterion.</p>
           <div id="criteria"></div>
-          <button id="evaluate" class="button" type="button">View recommendation</button>
-          <div id="matrix-result" class="result" role="status" hidden></div>
         </div>
-        <div id="step-one-result" class="result" role="status" hidden></div>
+        <button id="evaluate" class="button" type="button" hidden>View recommendation</button>
+        <div id="matrix-result" class="result" role="status" hidden></div>
       </section>
 
       <section id="submission" class="page panel" hidden>
@@ -251,37 +250,38 @@
 
       function updateStepOne() {
         const stepTwo = document.querySelector("#step-two");
-        const result = document.querySelector("#step-one-result");
+        const evaluateButton = document.querySelector("#evaluate");
+        const result = document.querySelector("#matrix-result");
         const launchRelated = document.querySelector('input[name="launch-related"]:checked')?.value;
         const productAffiliation = document.querySelector('input[name="product-affiliation"]:checked')?.value;
-        const bioRelevant = productAffiliation === "biologics" || productAffiliation === "both";
-        const messages = [];
 
         stepTwo.hidden = launchRelated !== "no" || !productAffiliation;
-        if (launchRelated === "yes") {
-          messages.push("Recommendation: present this change at the Global Product Launch CRB. Contact Jeanette Fait, the Global Product Launch CRB Chair. This route stops before Step 2.");
-        }
-        if (bioRelevant) {
-          messages.push("Share the change information with the respective Bio OpU PQLs.");
-        }
-        if (launchRelated === "no") {
-          messages.push(productAffiliation
-            ? "Continue to Step 2 to assess Plasma OpU CRB or Site CRB review."
-            : "Select the product affiliation to continue to Step 2.");
-        } else if (launchRelated === "yes" && !productAffiliation) {
-          messages.push("Select the product affiliation to check whether the Bio OpU PQLs should also be informed.");
-        }
-
-        result.textContent = messages.join(" ");
-        result.hidden = messages.length === 0;
-        document.querySelector("#matrix-result").hidden = true;
+        evaluateButton.hidden = !launchRelated || !productAffiliation;
+        result.textContent = "";
+        result.hidden = true;
       }
 
       document.querySelectorAll('input[name="launch-related"], input[name="product-affiliation"]')
         .forEach(input => input.addEventListener("change", updateStepOne));
+      document.querySelectorAll('input[name^="criterion-"]').forEach(input => input.addEventListener("change", () => {
+        const result = document.querySelector("#matrix-result");
+        result.textContent = "";
+        result.hidden = true;
+      }));
 
       document.querySelector("#evaluate").addEventListener("click", () => {
         const result = document.querySelector("#matrix-result");
+        const launchRelated = document.querySelector('input[name="launch-related"]:checked')?.value;
+        const productAffiliation = document.querySelector('input[name="product-affiliation"]:checked')?.value;
+        const bioRelevant = productAffiliation === "biologics" || productAffiliation === "both";
+
+        if (launchRelated === "yes") {
+          result.textContent = "Recommendation: present this change at the Global Product Launch CRB. Contact Jeanette Fait, the Global Product Launch CRB Chair."
+            + (bioRelevant ? " Also share the change information with the respective Bio OpU PQLs." : "");
+          result.hidden = false;
+          return;
+        }
+
         const answers = criteria.map((_, index) => document.querySelector(`input[name="criterion-${index}"]:checked`));
         if (answers.some(answer => !answer)) {
           result.textContent = "Please answer all five criteria to see a recommendation.";
@@ -289,9 +289,11 @@
           return;
         }
         const opuRequired = answers.some(answer => answer.value === "opu");
-        result.textContent = opuRequired
+        const routing = opuRequired
           ? "Recommendation: submit the change to the Plasma OpU CRB for broader governance."
-          : "Recommendation: submit the change to the Manufacturing Site CRB for local review. For Bio products, share the change information with the respective Bio OpU PQLs.";
+          : "Recommendation: submit the change to the Manufacturing Site CRB for local review.";
+        result.textContent = routing
+          + (bioRelevant ? " Also share the change information with the respective Bio OpU PQLs." : "");
         result.hidden = false;
       });
 
