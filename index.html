@@ -140,6 +140,7 @@
         </div>
         <button id="evaluate" class="button" type="button" hidden>View recommendation</button>
         <div id="matrix-result" class="result" role="status" hidden></div>
+        <button id="reset-matrix" class="button secondary" type="button" hidden>Run decision matrix again</button>
       </section>
 
       <section id="submission" class="page panel" hidden>
@@ -279,6 +280,7 @@
           result.textContent = "Recommendation: present this change at the Global Product Launch CRB. Contact Jeanette Fait, the Global Product Launch CRB Chair."
             + (bioRelevant ? " Also share the change information with the respective Bio OpU PQLs." : "");
           result.hidden = false;
+          document.querySelector("#reset-matrix").hidden = false;
           return;
         }
 
@@ -295,6 +297,13 @@
         result.textContent = routing
           + (bioRelevant ? " Also share the change information with the respective Bio OpU PQLs." : "");
         result.hidden = false;
+        document.querySelector("#reset-matrix").hidden = false;
+      });
+
+      document.querySelector("#reset-matrix").addEventListener("click", () => {
+        document.querySelectorAll('#matrix input[type="radio"]').forEach(input => { input.checked = false; });
+        document.querySelector("#reset-matrix").hidden = true;
+        updateStepOne();
       });
 
       document.querySelector("#submission-form").addEventListener("submit", event => {
