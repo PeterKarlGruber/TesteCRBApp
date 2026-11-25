@@ -3,70 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#092d4a">
+  <meta name="theme-color" content="#ffffff">
   <title>Plasma OpU eCRB</title>
   <style>
     :root {
       color-scheme: light;
-      --navy: #092d4a;
-      --blue: #0067a0;
-      --teal: #008477;
-      --ink: #203447;
-      --muted: #647789;
-      --line: #d7e1e9;
+      --red: #c8102e;
+      --red-soft: #fbe8eb;
+      --red-hover: #f4c2c9;
+      --text: #000;
+      --muted: #000;
+      --line: #d1d1d1;
       --surface: #fff;
-      --background: #f3f6f8;
-      --warning: #fff5da;
+      --background: #f2f2f2;
+      --soft-gray: #e8e8e8;
       font: 16px/1.5 "Segoe UI", Arial, sans-serif;
     }
 
     * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: var(--background); }
+    body { margin: 0; color: var(--text); background: var(--background); }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
-    .topbar { background: var(--navy); color: white; padding: 1.15rem max(1.25rem, calc((100% - 1180px) / 2)); }
+    .topbar { border-bottom: 3px solid var(--red); background: var(--surface); color: var(--text); padding: 1.15rem max(1.25rem, calc((100% - 1180px) / 2)); }
     .brand { display: flex; align-items: center; gap: .85rem; }
-    .brand-mark { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; border: 2px solid #65c8bc; border-radius: 50%; font-weight: 700; }
+    .brand-mark { display: grid; width: 2.6rem; height: 2.6rem; place-items: center; border: 2px solid var(--red); border-radius: 50%; font-weight: 700; }
     .brand h1 { margin: 0; font-size: 1.15rem; }
-    .brand p { margin: .15rem 0 0; color: #d7e8f1; font-size: .88rem; }
+    .brand p { margin: .15rem 0 0; color: var(--text); font-size: .88rem; }
     .layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 1.5rem; max-width: 1220px; margin: 1.5rem auto; padding: 0 1.25rem; }
     nav { align-self: start; padding: .5rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-    nav button { display: block; width: 100%; padding: .72rem .8rem; border: 0; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; }
-    nav button:hover, nav button[aria-current="page"] { background: #e8f2f7; color: var(--blue); font-weight: 650; }
+    nav button { display: block; width: 100%; padding: .72rem .8rem; border: 0; border-radius: 8px; background: transparent; color: var(--text); text-align: left; }
+    nav button:hover, nav button[aria-current="page"] { background: var(--red-soft); color: var(--text); font-weight: 650; }
     main { min-width: 0; }
-    .panel { padding: clamp(1.1rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 3px 12px #1636500a; }
+    .panel { padding: clamp(1.1rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 3px 12px #0000000a; }
     .panel + .panel { margin-top: 1rem; }
-    h2 { margin: 0 0 .45rem; color: var(--navy); font-size: 1.55rem; }
-    h3 { margin: 1.5rem 0 .55rem; color: var(--navy); font-size: 1.08rem; }
+    h2 { margin: 0 0 .45rem; color: var(--text); font-size: 1.55rem; }
+    h3 { margin: 1.5rem 0 .55rem; color: var(--text); font-size: 1.08rem; }
     p { margin: .4rem 0 .85rem; }
     .lead, .muted { color: var(--muted); }
-    .notice { margin: 1rem 0; padding: .85rem 1rem; border-left: 4px solid #dda52a; border-radius: 5px; background: var(--warning); }
+    .notice { margin: 1rem 0; padding: .85rem 1rem; border-left: 4px solid var(--red); border-radius: 5px; background: var(--soft-gray); }
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
     .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .field { margin: .9rem 0; }
     label, legend { display: block; margin-bottom: .35rem; font-weight: 650; }
-    input, select, textarea { width: 100%; min-height: 2.65rem; padding: .55rem .65rem; border: 1px solid #aebdca; border-radius: 6px; color: var(--ink); background: white; }
+    input, select, textarea { width: 100%; min-height: 2.65rem; padding: .55rem .65rem; border: 1px solid #bdbdbd; border-radius: 6px; color: var(--text); background: white; }
+    input[type="radio"], input[type="checkbox"] { accent-color: var(--red); }
     textarea { min-height: 6rem; resize: vertical; }
+    a { color: var(--text); }
     fieldset { margin: 1rem 0; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; }
     fieldset label { display: flex; align-items: flex-start; gap: .5rem; margin: .75rem 0; font-weight: 400; }
     fieldset input { width: auto; min-height: auto; margin-top: .35rem; }
     .hint { display: block; color: var(--muted); font-size: .88rem; font-weight: 400; }
-    .button { display: inline-block; padding: .65rem 1rem; border: 0; border-radius: 6px; background: var(--blue); color: white; font-weight: 650; }
-    .button:hover { background: #004e79; }
-    .button.secondary { border: 1px solid var(--line); background: white; color: var(--ink); }
+    .button { display: inline-block; padding: .65rem 1rem; border: 1px solid var(--red); border-radius: 6px; background: var(--red-soft); color: var(--text); font-weight: 650; }
+    .button:hover { background: var(--red-hover); }
+    .button.secondary { border: 1px solid var(--line); background: white; color: var(--text); }
     .button.small { padding: .42rem .65rem; font-size: .9rem; }
-    .result { margin-top: 1rem; padding: 1rem; border-radius: 8px; background: #e8f5f2; }
+    .result { margin-top: 1rem; padding: 1rem; border-left: 4px solid var(--red); border-radius: 8px; background: var(--soft-gray); }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)); gap: .8rem; margin: 1rem 0; }
-    .card { padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: #fbfdfe; }
-    .card strong { display: block; color: var(--navy); font-size: 1.65rem; }
+    .card { padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+    .card strong { display: block; color: var(--text); font-size: 1.65rem; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: .7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    th { color: var(--navy); font-size: .9rem; }
+    th { color: var(--text); font-size: .9rem; }
     td { min-width: 110px; }
     td:first-child { min-width: 180px; }
-    .tag { display: inline-block; padding: .17rem .55rem; border-radius: 99px; background: #e8f2f7; color: #155878; font-size: .84rem; white-space: nowrap; }
-    .empty { padding: 1rem; border: 1px dashed #b6c4ce; border-radius: 8px; color: var(--muted); text-align: center; }
+    .tag { display: inline-block; padding: .17rem .55rem; border-radius: 99px; background: var(--red-soft); color: var(--text); font-size: .84rem; white-space: nowrap; }
+    .empty { padding: 1rem; border: 1px dashed #bdbdbd; border-radius: 8px; color: var(--muted); text-align: center; }
     .footer { margin: 1rem 0; color: var(--muted); font-size: .84rem; text-align: center; }
     [hidden] { display: none !important; }
     @media (max-width: 760px) {
